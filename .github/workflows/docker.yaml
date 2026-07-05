@@ -45,12 +45,11 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t supersakti/latihan-devops:tagname .
+          docker build -t supersakti/latihan-devops:latest .
 
       - name: Push Docker Image
         run: |
-          docker push $supersakti/latihan-devops:tagname
-
+          docker push supersakti/latihan-devops:latest
 
   deploy:
 
@@ -74,8 +73,10 @@ jobs:
 
           key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+          port: 2222
+
           script: |
-            cd ~/latihan-devops
+            cd ~/Latihan-Devops
             git pull
             docker compose pull
             docker compose up -d
