@@ -3,18 +3,15 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main  
+      - main
 
 jobs:
 
   test:
-
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -29,6 +26,7 @@ jobs:
         run: |
           python test.py
 
+
   build:
 
     needs: test
@@ -37,10 +35,9 @@ jobs:
 
     steps:
 
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Login Docker Hub
+      - name: Login DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -52,4 +49,33 @@ jobs:
 
       - name: Push Docker Image
         run: |
-          docker push supersakti/latihan-devops:tagname
+          docker push $supersakti/latihan-devops:tagname
+
+
+  deploy:
+
+    needs: build
+
+    if: github.ref == 'refs/heads/main'
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Deploy via SSH
+
+        uses: appleboy/ssh-action@v1.2.2
+
+        with:
+
+          host: ${{ secrets.SERVER_HOST }}
+
+          username: ${{ secrets.SERVER_USER }}
+
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+          script: |
+            cd ~/latihan-devops
+            git pull
+            docker compose pull
+            docker compose up -d

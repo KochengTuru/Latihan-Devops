@@ -20,7 +20,7 @@ services:
 
 
   app:
-    build: .
+    image: supersakti/latihan-devops:latest
     container_name: flask-app
 
     ports:
