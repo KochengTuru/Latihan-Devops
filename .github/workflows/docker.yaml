@@ -48,8 +48,8 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t supersakti/myapp:latest .
+          docker build -t supersakti/latihan-devops:tagname .
 
       - name: Push Docker Image
         run: |
-          docker push supersakti/myapp:latest
+          docker push supersakti/latihan-devops:tagname
